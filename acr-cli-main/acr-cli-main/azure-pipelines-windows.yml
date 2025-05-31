@@ -1,0 +1,34 @@
+trigger:
+- main
+
+pr:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  GOPATH: '$(system.defaultWorkingDirectory)\work'
+  ModulePath: $(GOPATH)\src\github.com\Azure\acr-cli
+
+steps:
+
+- task: GoTool@0
+  inputs:
+    version: '1.24.2'
+
+- script: |
+    (robocopy $(system.defaultWorkingDirectory) $(ModulePath) /E /XD  $(system.defaultWorkingDirectory)\work)^& IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+  displayName: 'Setup'
+
+- script: |
+    go version
+    go env
+    go build .\cmd\acr
+  workingDirectory: '$(ModulePath)'
+  displayName: 'Build'
+
+- script: |
+    go test -v ./... 
+  workingDirectory: '$(ModulePath)'
+  displayName: 'Test'

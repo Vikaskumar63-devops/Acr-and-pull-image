@@ -1,0 +1,22 @@
+run:
+  concurrency: 2
+  deadline: 10m
+linters-settings:
+  golint:
+    min-confidence: 0
+linters:
+  disable-all: true
+  enable:
+    - gofmt
+    - goimports
+    - revive
+    - gosec
+    - govet
+    - ineffassign
+    - unconvert
+    - unused
+issues:
+  exclude-dirs:
+    - vendor
+    - docs
+    - baseimages
